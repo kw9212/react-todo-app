@@ -5,12 +5,23 @@ function ToDoList() {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<IForm>({ defaultValues: { email: "@naver.com" } });
   //  console.log(watch());
   console.log(errors);
 
-  const onValid = (data: any) => {
-    console.log(data);
+  const onValid = (data: IForm) => {
+    // console.log(data);
+    if (data.password !== data.password1) {
+      setError(
+        "password1",
+        {
+          message: "password1 does not match with password",
+        },
+        { shouldFocus: true }
+      );
+    }
+    setError("extraError", { message: "server offline" }); // 전체 form에 적용
   };
 
   interface IForm {
@@ -20,6 +31,7 @@ function ToDoList() {
     username: string;
     password: string;
     password1: string;
+    extraError?: string; // not required
   }
 
   return (
@@ -41,7 +53,16 @@ function ToDoList() {
         />
         <span>{errors?.email?.message}</span>
         <input
-          {...register("firstname", { required: "Write here" })}
+          {...register("firstname", {
+            required: "Write here",
+            // validate: (value) => true, 이렇게 작성하면 firstname은 어떻게 작성하든 통과 반대로 false라 하면 어떻게 하든 통과못함
+            validate: {
+              noNico: (value) =>
+                value.includes("nico") ? "no nico allowed" : true,
+              noLonely: (value) =>
+                value.includes("lonely") ? "no lonely allowed" : true,
+            },
+          })}
           placeholder="firstname"
         />
         <span>{errors?.firstname?.message}</span>
@@ -74,6 +95,7 @@ function ToDoList() {
         <span>{errors?.password1?.message}</span>
 
         <button>Add</button>
+        <span>{errors.extraError?.message};</span>
       </form>
     </div>
   );
