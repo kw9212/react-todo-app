@@ -8,7 +8,7 @@ function ToDoList() {
   console.log(toDos);
   return (
     <div>
-      <h1>To DOs</h1>
+      <h1>To Dos</h1>
       <CreateToDo />
       <ul>
         {toDos.map((toDo) => (
